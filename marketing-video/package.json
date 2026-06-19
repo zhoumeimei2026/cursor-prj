@@ -1,0 +1,18 @@
+{
+  "name": "marketing-video",
+  "version": "1.0.0",
+  "description": "内窥镜主控板 & 影像系统定制开发团队 - 5秒营销视频",
+  "type": "module",
+  "main": "render.mjs",
+  "scripts": {
+    "render": "node render.mjs",
+    "render:hq": "node render.mjs --fps 60",
+    "preview": "node -e \"const http=require('http'),fs=require('fs'),p=require('path');http.createServer((q,s)=>{let f=p.join(process.cwd(),q.url==='/'?'index.html':q.url);fs.readFile(f,(e,d)=>{if(e){s.writeHead(404);s.end()}else{const t={'.html':'text/html','.js':'text/javascript','.png':'image/png'}[p.extname(f)]||'text/plain';s.writeHead(200,{'Content-Type':t});s.end(d)}})}).listen(8080,()=>console.log('preview: http://localhost:8080'))\""
+  },
+  "keywords": ["endoscope", "marketing", "video", "canvas"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>内窥镜主控板 &amp; 影像系统定制 · 营销视频</title>
+    <style>
+      :root { color-scheme: dark; }
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #03070f;
+        color: #cfe3ff;
+        font-family: "Noto Sans CJK SC", "Noto Sans SC", system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      }
+      #stage {
+        width: min(96vw, 1280px);
+        aspect-ratio: 16 / 9;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(33, 230, 255, 0.15);
+        border-radius: 10px;
+        background: #000;
+      }
+      canvas { width: 100%; height: 100%; border-radius: 10px; display: block; }
+      .bar { display: flex; gap: 12px; align-items: center; }
+      button {
+        background: #133258; color: #d7ecff; border: 1px solid #2f6bff;
+        padding: 8px 18px; border-radius: 8px; cursor: pointer; font-size: 14px;
+      }
+      button:hover { background: #1b4a86; }
+      .hint { font-size: 13px; opacity: 0.6; }
+    </style>
+  </head>
+  <body>
+    <div id="stage"><canvas id="c" width="1920" height="1080"></canvas></div>
+    <div class="bar">
+      <button id="replay">↻ 重播</button>
+      <span class="hint">5 秒循环预览 · 导出 MP4 请运行 <code>npm run render</code></span>
+    </div>
+
+    <script src="video.js"></script>
+    <script>
+      const canvas = document.getElementById("c");
+      const ctx = canvas.getContext("2d");
+      let start = null;
+
+      function frame(now) {
+        if (start === null) start = now;
+        let t = (now - start) / 1000;
+        if (t > MVideo.DURATION) {
+          start = now; // 循环
+          t = 0;
+        }
+        MVideo.draw(ctx, t);
+        requestAnimationFrame(frame);
+      }
+
+      MVideo.preload("assets/").then(() => {
+        document.fonts && document.fonts.ready.then(() => {
+          requestAnimationFrame(frame);
+        });
+        if (!document.fonts) requestAnimationFrame(frame);
+      });
+
+      document.getElementById("replay").onclick = () => { start = null; };
+
+      // 导出钩子：供 puppeteer 逐帧调用
+      window.__ready = false;
+      MVideo.preload("assets/").then(async () => {
+        if (document.fonts) await document.fonts.load('900 96px "Noto Sans CJK SC"');
+        window.__ready = true;
+      });
+      window.__renderFrame = (t) => MVideo.draw(ctx, t);
+    </script>
+  </body>
+</html>
