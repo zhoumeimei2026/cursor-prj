@@ -57,9 +57,8 @@ def drawtext(
     bordercolor: str = "0x001018@0.75",
 ) -> str:
     """Build one drawtext filter expression."""
-    return ":".join(
+    return "drawtext=" + ":".join(
         [
-            "drawtext",
             f"fontfile={FONT_FILE}",
             f"textfile={textfile}",
             f"fontsize={fontsize}",
@@ -116,13 +115,13 @@ def render_video(output_path: Path, poster_path: Path) -> None:
             "format=yuv420p",
             "eq=contrast=1.10:brightness=-0.03:saturation=1.15",
             "drawgrid=width=80:height=80:thickness=1:color=0x7cecff@0.05",
-            "drawbox=x='-360+t*210':y=0:w=280:h=h:color=0x25ddff@0.08:t=fill",
-            "drawbox=x='w-340-t*70':y=92:w=220:h=2:color=0x8af6ff@0.65:t=fill",
-            "drawbox=x='w-340':y=92:w=2:h=220:color=0x8af6ff@0.18:t=fill",
+            "drawbox=x='-360+t*210':y=0:w=280:h=ih:color=0x25ddff@0.08:t=fill",
+            "drawbox=x='iw-340-t*70':y=92:w=220:h=2:color=0x8af6ff@0.65:t=fill",
+            "drawbox=x='iw-340':y=92:w=2:h=220:color=0x8af6ff@0.18:t=fill",
             "drawbox=x=96:y=588:w=260:h=2:color=0x8af6ff@0.42:t=fill",
             "drawbox=x=96:y=588:w=2:h=56:color=0x8af6ff@0.18:t=fill",
-            "drawbox=x='mod(t*320,w)':y=0:w=3:h=h:color=0xffffff@0.035:t=fill",
-            "drawbox=x=0:y='mod(t*170,h)':w=w:h=2:color=0x59ecff@0.05:t=fill",
+            "drawbox=x='mod(t*320,iw)':y=0:w=3:h=ih:color=0xffffff@0.035:t=fill",
+            "drawbox=x=0:y='mod(t*170,ih)':w=iw:h=2:color=0x59ecff@0.05:t=fill",
             "noise=alls=2.5:allf=t+u",
             "vignette=PI/5",
             drawtext(
